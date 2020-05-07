@@ -1,4 +1,4 @@
-exports.default = (req, res, next) => {
+module.exports = (req, res, next) => {
 	// res.setHeader('Access-Control-Allow-Origin', 'origin_domain'); // Choose client
 	res.setHeader('Access-Control-Allow-Origin', '*'); // Allows all clients
 	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');

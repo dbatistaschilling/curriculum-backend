@@ -50,9 +50,7 @@ const profileSchema = new Schema({
         state: String,
         country: String
     },
-	description: {
-		type: String
-	}
+	description: String
 });
 
 module.exports = mongoose.model('Profile', profileSchema);

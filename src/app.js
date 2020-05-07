@@ -16,15 +16,21 @@ app.use(bodyParser.json()); // application/json
 
 // Middlewares Usage
 app.use(cors); // Permition among systems
-app.use(errors); // Error handler
 
 // Routes end points
-app.get(profile);
+app.use(profile);
 
 
+
+app.use(errors); // Error handler
 
 mongoose
-	.connect(MONGODB_URI)
+	.connect(
+		MONGODB_URI,
+		{
+			useNewUrlParser: true,
+			useUnifiedTopology: true
+		})
 	.then(result => {
 		app.listen(process.env.PORT || 3000);
 	})
