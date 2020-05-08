@@ -84,6 +84,7 @@ exports.birthAddress = [
     .exists().withMessage('Birth state not sent by the frontend')
     .notEmpty().withMessage('Birth state is required')
     .isString().withMessage('Birth state is a string text')
+    .isLength({ max: 2 }).withMessage('Birth state has 2 characters')
     .trim(),
 
     body('birthAddress.country')

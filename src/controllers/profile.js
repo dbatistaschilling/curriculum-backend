@@ -2,10 +2,18 @@ const Profile = require('../models/profile');
 
 const validationResult = require('../utils/validation-result');
 const profileUpdate = require('../utils/profile/profile-update');
+const deleteFile = require('../utils/delete-file');
 
 exports.createProfile = (req, res, next) => {
     validationResult(req);
+    if (!req.file) {
+        const error = new Error('No image provided.');
+        error.statusCode = 422;
+        throw error;
+    }
+    const imageUrl = req.file.path;
     const params = req.body;
+    params.imageUrl = imageUrl;
     const profile = new Profile(params);
     profile.save().then(profile => {
         res.status(201).json({
@@ -21,8 +29,7 @@ exports.createProfile = (req, res, next) => {
 }
 
 exports.getAllProfiles = (req, res, next) => {
-    
-    Profile.find({}).then(profiles => {
+    Profile.find().then(profiles => {
         if (!profiles) {
             const error = new Error('Could not find profiles.');
             error.statusCode = 404;
@@ -67,8 +74,7 @@ exports.updateProfile = (req, res, next) => {
             error.statusCode = 404;
             throw error;
         }
-        
-        profile = profileUpdate(profile, params);
+        profile = profileUpdate(profile, params, req);
         return profile.save();
     })
     .then(result => {
@@ -91,6 +97,7 @@ exports.deleteProfile = (req, res, next) => {
             error.statusCode = 404;
             throw error;
         }
+        deleteFile(profile.imageUrl);
         return Profile.findOneAndDelete(profileId);
     })
     .then(result => {

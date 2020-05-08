@@ -50,7 +50,13 @@ const profileSchema = new Schema({
         state: String,
         country: String
     },
-	description: String
-});
+    description: String,
+    imageUrl: {
+        type: String,
+        required: true
+    }
+},
+    {timestamps: true}
+);
 
 module.exports = mongoose.model('Profile', profileSchema);
