@@ -1,21 +1,18 @@
 const express = require('express');
 const profileController = require('../controllers/profile');
-const {name, job, phone, email, address, birth, birthAddress, description} = require('../utils/profile/profile-validations');
+const profile = require('../utils/profile/profile-validations');
+const isAuth = require('../middlewares/is-auth');
 
 const router = express.Router();
 // POST /profile
-router.post('/profile', 
-    [name, job, phone, email, address, birth, birthAddress, description],
-    profileController.createProfile);
+router.post('/profile', isAuth, profile, profileController.createProfile);
 // GET /profiles
-router.get('/profiles', profileController.getAllProfiles);
+router.get('/profiles', isAuth, profileController.getAllProfiles);
 // GET /profile/:profileId
-router.get('/profile/:profileId', profileController.getProfile);
+router.get('/profile/:profileId', isAuth, profileController.getProfile);
 // PATCH /profile/:profileId
-router.patch('/profile/:profileId',
-    [name, job, phone, email, address, birth, birthAddress, description],
-    profileController.updateProfile);
+router.patch('/profile/:profileId', isAuth, profile, profileController.updateProfile);
 // DELETE /profile/:profileId
-router.delete('/profile/:profileId', profileController.deleteProfile);
+router.delete('/profile/:profileId', isAuth, profileController.deleteProfile);
 
 module.exports = router;

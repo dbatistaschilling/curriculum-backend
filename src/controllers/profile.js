@@ -4,6 +4,8 @@ const validationResult = require('../utils/validation-result');
 const profileUpdate = require('../utils/profile/profile-update');
 const deleteFile = require('../utils/delete-file');
 
+const User = require('../models/user');
+
 exports.createProfile = (req, res, next) => {
     validationResult(req);
     if (!req.file) {
@@ -15,22 +17,29 @@ exports.createProfile = (req, res, next) => {
     const params = req.body;
     params.imageUrl = imageUrl;
     const profile = new Profile(params);
-    profile.save().then(profile => {
-        res.status(201).json({
-            message: 'Profile created!',
-            profile
+    
+    User.findOne({_id: req.userId})
+        .then(user => {
+            profile.owner = user._id;
+            return profile.save();
+        })
+        .then(profile => {
+            res.status(201).json({
+                message: 'Profile created!',
+                profile
+            });
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
         });
-    }).catch(err => {
-        if (!err.statusCode) {
-            err.statusCode = 500;
-        }
-        next(err);
-    });
 }
 
 exports.getAllProfiles = (req, res, next) => {
     Profile.find().then(profiles => {
-        if (!profiles) {
+        if (!profiles || profiles.length === 0) {
             const error = new Error('Could not find profiles.');
             error.statusCode = 404;
             throw error;

@@ -11,9 +11,11 @@ const errors = require('./middlewares/errors');
 const {fileStorage, fileFilter} = require('./middlewares/images');
 // Routes imports
 const profile = require('./routes/profile');
+const auth = require('./routes/auth');
+const user = require('./routes/user');
 
 const app = express();
-const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-kxzpv.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}?authSource=admin&replicaSet=Cluster0-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true`
+const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-kxzpv.mongodb.net/${process.env.MONGO_DEV_DATABASE}?authSource=admin&replicaSet=Cluster0-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true`
 
 // Parsers
 app.use(bodyParser.json()); // application/json
@@ -24,6 +26,8 @@ app.use(multer({storage: fileStorage, fileFilter: fileFilter }).single('image'))
 app.use('/src/images', express.static(path.join(__dirname, 'src', 'images')));
 
 // Routes end points
+app.use(auth);
+app.use(user);
 app.use(profile);
 
 

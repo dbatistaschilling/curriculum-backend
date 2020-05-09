@@ -1,24 +1,25 @@
-const { body, param  } = require('express-validator');
+const { body } = require('express-validator');
 
-exports.name = body('name')
+module.exports = [
+    body('name')
     .exists().withMessage('Name not sent by the frontend')
     .notEmpty().withMessage('Name is required')
     .isString().withMessage('Name is a string text')
-    .trim()
+    .trim(),
 
-exports.job = body('job')
+    body('job')
     .exists().withMessage('Job not sent by the frontend')
     .notEmpty().withMessage('Job is required')
     .isString().withMessage('Job is a string text')
-    .trim()
+    .trim(),
 
-exports.phone = body('phone')
+    body('phone')
     .exists().withMessage('Phone not sent by the frontend')
     .notEmpty().withMessage('Phone is required')
     .isMobilePhone("any").withMessage('Invalid phone')
-    .trim()
+    .trim(),
 
-exports.email = body('email')
+    body('email')
     .exists().withMessage('Email not sent by the frontend')
     .notEmpty().withMessage('Email is required')
     .isEmail().withMessage('Invalid email')
@@ -28,9 +29,8 @@ exports.email = body('email')
         }
         return true;
     })
-    .normalizeEmail()
+    .normalizeEmail(),
 
-exports.address = [
     body('address.street')
     .exists().withMessage('Street not sent by the frontend')
     .notEmpty().withMessage('Street is required')
@@ -65,15 +65,13 @@ exports.address = [
     .notEmpty().withMessage('Country is required')
     .isString().withMessage('Country is a string text')
     .trim(),
-];
 
-exports.birth = body('birth')
+    body('birth')
     .exists().withMessage('Birth not sent by the frontend')
     .notEmpty().withMessage('Birth is required')
     .isISO8601().withMessage('Birth has Date ISO8601 format')
-    .trim()
+    .trim(),
 
-exports.birthAddress = [
     body('birthAddress.city')
     .exists().withMessage('Birth city not sent by the frontend')
     .notEmpty().withMessage('Birth city is required')
@@ -92,9 +90,9 @@ exports.birthAddress = [
     .notEmpty().withMessage('Birth country is required')
     .isString().withMessage('Birth country is a string text')
     .trim(),
-]
 
-exports.description = body('description')
+    body('description')
     .exists().withMessage('Description not sent by the frontend')
     .isString().withMessage('Description is a string text')
     .trim()
+]
