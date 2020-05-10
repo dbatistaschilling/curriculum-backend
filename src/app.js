@@ -8,7 +8,7 @@ const multer = require('multer');
 // Middlewares imports
 const cors = require('./middlewares/cors');
 const errors = require('./middlewares/errors');
-const {fileStorage, fileFilter} = require('./middlewares/images');
+const {fileStorage, fileFilter, sharpMethod} = require('./middlewares/images');
 // Routes imports
 const profile = require('./routes/profile');
 const auth = require('./routes/auth');
@@ -22,7 +22,7 @@ app.use(bodyParser.json()); // application/json
 
 // Middlewares Usage
 app.use(cors); // Permition among systems
-app.use(multer({storage: fileStorage, fileFilter: fileFilter }).single('image'));
+app.use(multer({storage: fileStorage, fileFilter: fileFilter }).single('image'), sharpMethod);
 app.use('/src/images', express.static(path.join(__dirname, 'src', 'images')));
 
 // Routes end points

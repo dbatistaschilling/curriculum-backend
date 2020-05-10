@@ -2,6 +2,7 @@ const express = require('express');
 const profileController = require('../controllers/profile');
 const profile = require('../utils/profile/profile-validations');
 const isAuth = require('../middlewares/is-auth');
+// const {sharpMethod} = require('../middlewares/images');
 
 const router = express.Router();
 // POST /profile
