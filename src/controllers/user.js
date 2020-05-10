@@ -80,8 +80,8 @@ exports.deleteUser = (req, res, next) => {
         .then(user => {
             return user.remove();
         })
-        .then(result => {
-            res.status(200).json({ message: 'User deleted!' });
+        .then(user => {
+            res.status(200).json({ message: 'User deleted!', user });
         })
         .catch(err => {
             if (!err.statusCode) {
