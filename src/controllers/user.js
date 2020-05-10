@@ -1,11 +1,10 @@
 const User = require('../models/user');
+const clientQueries = require('../utils/client-queries');
 
 exports.getAllUsers = (req, res, next) => {
     User
         .find()
         .then(users => {
-            console.log(users);
-            
             if (!users || users.length === 0){
                 const error = new Error('No user found');
                 error.statusCode = 401;
@@ -29,7 +28,7 @@ exports.getCurrentUser = (req, res, next) => {
                 error.statusCode = 401;
                 throw error;
             }
-            res.status(200).json({ message: 'Current fetched user', user })
+            res.status(200).json({ message: 'Current fetched user', user, token: req.token })
         })
         .catch(err => {
             if (!err.statusCode) {
@@ -39,7 +38,8 @@ exports.getCurrentUser = (req, res, next) => {
         });
 }
 
-exports.getUserProfiles = (req, res, next) => {
+exports.getUserProfiles = (req, res, next) => {  
+    const [match, page, perPage, sortby] = clientQueries(req);
     User.findOne({_id: req.userId})
         .then(user => {
             if (!user){
@@ -47,9 +47,24 @@ exports.getUserProfiles = (req, res, next) => {
                 error.statusCode = 401;
                 throw error;
             }
-            return user.populate('profiles').execPopulate();
+            return user.populate({
+                path: 'profiles',
+                match,
+                options: {
+                    limit: +perPage,
+                    skip: (+page * +perPage) - +perPage,
+                    sort: {
+                        [sortby[0]]: sortby[1] 
+                    }
+                }
+            }).execPopulate();
         })
         .then(user => {
+            if (user.profiles.length === 0){
+                const error = new Error('No profiles found');
+                error.statusCode = 401;
+                throw error;
+            }
             res.status(200).json({ message: 'User profiles', profiles: user.profiles })
         })
         .catch(err => {

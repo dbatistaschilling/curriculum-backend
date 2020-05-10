@@ -18,13 +18,7 @@ const userSchema = new Schema({
   status: {
     type: String,
     default: 'Active'
-  },
-	tokens: [{
-		token: {
-			type: String,
-			required: true
-		}
-	}]
+  }
 },
 {timestamps: true}
 );
@@ -38,6 +32,12 @@ userSchema.methods.toJSON = function () {
 
 userSchema.virtual('profiles', {
   ref: 'Profile',
+  localField: '_id',
+  foreignField: 'owner'
+});
+
+userSchema.virtual('tokens', {
+  ref: 'Token',
   localField: '_id',
   foreignField: 'owner'
 });

@@ -1,6 +1,7 @@
 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const Token = require('../models/token');
 
 const validationResult = require('../utils/validation-result');
 
@@ -32,24 +33,23 @@ exports.login = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   let loadedUser;
-  let token;
   User.findOne({ email: email })
     .then(user => {
       if (!user) {
-        const error = new Error('A user with this email could not be found.');
-        error.statusCode = 401;
-        throw error;
+          const error = new Error('A user with this email could not be found.');
+          error.statusCode = 401;
+          throw error;
       }
       loadedUser = user;
       return bcrypt.compare(password, user.password);
     })
     .then(isEqual => {
         if (!isEqual) {
-        const error = new Error('Wrong password!');
-        error.statusCode = 401;
-        throw error;
+            const error = new Error('Wrong password!');
+            error.statusCode = 401;
+            throw error;
         }
-        token = jwt.sign(
+        const token = jwt.sign(
         {
             email: loadedUser.email,
             userId: loadedUser._id.toString()
@@ -57,11 +57,11 @@ exports.login = (req, res, next) => {
         process.env.JWT_SECRET_KEY,
         { expiresIn: '1h' }
         );
-        loadedUser.tokens.push({token});
-        return loadedUser.save();
+        const newToken = new Token({token, owner: loadedUser._id});
+        return newToken.save();
     })
-    .then(user => {
-      res.status(200).json({ token, user });
+    .then(token => {
+      res.status(200).json({ token, userId: token.owner });
     })
     .catch(err => {
       if (!err.statusCode) {
@@ -72,16 +72,11 @@ exports.login = (req, res, next) => {
 };
 
 exports.logout = (req, res, next) => {
-  User.findOne({_id: req.userId})
-    .then(user => {
-      user.tokens.forEach((t, index, tokens) => {
-        if (t.token === req.token){
-          tokens.splice(index, 1);
-        }
-      })
-      return user.save();
+  Token.findOne({ token: req.token })
+    .then(token => {
+      return token.remove();
     })
-    .then(user => {
-      res.status(200).json({message: 'Logout from application', user});
+    .then(token => {
+      res.status(200).json({message: 'Logout from application', token});
     })
 }

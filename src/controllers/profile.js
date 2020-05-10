@@ -3,6 +3,7 @@ const Profile = require('../models/profile');
 const validationResult = require('../utils/validation-result');
 const profileUpdate = require('../utils/profile/profile-update');
 const deleteFile = require('../utils/delete-file');
+const clientQueries = require('../utils/client-queries');
 
 const User = require('../models/user');
 
@@ -38,20 +39,25 @@ exports.createProfile = (req, res, next) => {
 }
 
 exports.getAllProfiles = (req, res, next) => {
-    Profile.find().then(profiles => {
-        if (!profiles || profiles.length === 0) {
-            const error = new Error('Could not find profiles.');
-            error.statusCode = 404;
-            throw error;
-        }
-        res.status(200).json({ message: 'Fetched all profiles', profiles });
-    })
-    .catch(err => {
-        if (!err.statusCode) {
-            err.statusCode = 500;
-        }
-        next(err);
-    })
+    const [match, page, perPage, sortby] = clientQueries(req);
+    Profile.find( match )
+        .skip((+page * +perPage) - +perPage)
+        .limit(+perPage)
+        .sort({[sortby[0]]: sortby[1] })
+        .then(profiles => {
+            if (!profiles || profiles.length === 0) {
+                const error = new Error('Could not find profiles.');
+                error.statusCode = 404;
+                throw error;
+            }
+            res.status(200).json({ message: 'Fetched all profiles', profiles });
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        });
 }
 
 exports.getProfile = (req, res, next) => {
