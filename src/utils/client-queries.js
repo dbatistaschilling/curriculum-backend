@@ -16,7 +16,11 @@ module.exports = (req) => {
                     sortby[1] = -1;
                 }
             } else {
-                match[e] = req.query[e];
+                if (req.query[e].includes('-')){
+                    match[e] = req.query[e].split('-').join(' ');
+                } else {
+                    match[e] = req.query[e];
+                }
             }
         })
     }

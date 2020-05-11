@@ -70,16 +70,24 @@ exports.signup = [
     })
     .bail()
 ]
-// 
-// .custom((value, { req }) => {
-//     return User.findOne({ email: value })
-//       .then(userDoc => {
-//           if (userDoc) {
-//           return Promise.reject('E-Mail address already exists!');
-//           }
-//       });
-//   })
-// body('name')
-// .trim()
-// .not()
-// .isEmpty()
+
+exports.recoverPassword = [
+    body('password')
+    .exists().withMessage('password not sent by the frontend')
+    .notEmpty().withMessage('Password is empty')
+    .isLength({ min: 5 }).withMessage('Password takes at least 5 characters')
+    .isAlphanumeric().withMessage('Invalid password input')
+    .trim()
+    .bail(),
+
+    body('confirmPassword')
+    .exists().withMessage('confirmPassword not sent by the frontend')
+    .custom((value, { req }) => {
+        if (value !== req.body.password){
+            throw new Error('Passwords don\'t match!');
+        }
+        return true;
+
+    })
+    .bail()
+]

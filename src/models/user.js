@@ -18,7 +18,9 @@ const userSchema = new Schema({
   status: {
     type: String,
     default: 'Active'
-  }
+  },
+  resetToken: String,
+  resetTokenExpiration: Date
 },
 {timestamps: true}
 );
