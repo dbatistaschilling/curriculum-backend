@@ -2,6 +2,7 @@
 const path = require('path');
 // Package imports
 const express = require('express');
+require('./db/mongoose')
 const bodyParser = require('body-parser');
 
 const multer = require('multer');

@@ -22,8 +22,21 @@ const userSchema = new Schema({
   resetToken: String,
   resetTokenExpiration: Date
 },
-{timestamps: true}
-);
+{
+  timestamps: true
+},
+{
+  toObject: {
+    transform: function (doc, ret) {
+      delete ret._id;
+    }
+  },
+  toJSON: {
+    transform: function (doc, ret) {
+      delete ret._id;
+    }
+  }
+});
 
 userSchema.methods.toJSON = function () {
 	const userObject = this.toObject();

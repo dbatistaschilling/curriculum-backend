@@ -2,15 +2,17 @@
   "name": "backend-curriculum",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node src/app.js",
-    "start:dev": "env-cmd -e dev nodemon src/app.js",
-    "test": "env-cmd -e test jest --watch",
-    "test:mocha": "mocha src/test --timeout 5000"
+    "start": "node src/server.js",
+    "start:dev": "env-cmd -e dev nodemon src/server.js",
+    "test": "env-cmd -e test jest --watch --runInBand --detectOpenHandles --testTimeout=10000"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
   },
   "keywords": [],
   "author": "",
