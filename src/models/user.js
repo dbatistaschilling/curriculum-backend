@@ -24,18 +24,6 @@ const userSchema = new Schema({
 },
 {
   timestamps: true
-},
-{
-  toObject: {
-    transform: function (doc, ret) {
-      delete ret._id;
-    }
-  },
-  toJSON: {
-    transform: function (doc, ret) {
-      delete ret._id;
-    }
-  }
 });
 
 userSchema.methods.toJSON = function () {
