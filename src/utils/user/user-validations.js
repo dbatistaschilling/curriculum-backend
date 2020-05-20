@@ -2,10 +2,17 @@ const { body } = require('express-validator');
 const bcrypt = require('bcryptjs')
 const User = require('../../models/user');
 
+
 exports.login = [
     body('email')
     .exists().withMessage('email not sent by the frontend')
     .notEmpty().withMessage('Email is empty')
+    .custom((value, { req }) => {
+        if (!value.includes('.com')){
+            throw new Error('email: This is not a valid email');
+        }
+        return true;
+    })
     .bail(),
 
     body('password')
