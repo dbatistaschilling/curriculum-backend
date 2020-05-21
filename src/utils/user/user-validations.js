@@ -8,8 +8,8 @@ exports.login = [
     .exists().withMessage('email not sent by the frontend')
     .notEmpty().withMessage('Email is empty')
     .custom((value, { req }) => {
-        if (!value.includes('.com')){
-            throw new Error('email: This is not a valid email');
+        if (!value.includes('.com')){            
+            throw new Error('This is not a valid email');
         }
         return true;
     })
