@@ -4,20 +4,13 @@ const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const validation = require('../utils/validation-result');
-const { validationResult } = require('express-validator');
+const validationResult = require('../utils/validation-result');
 
 const Token = require('../models/token');
 const User = require('../models/user');
 
 exports.signup = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()){    
-    const error = new Error(`${errors.array()[0].msg}`);
-    error.statusCode = 401;
-    error.param = errors.array()[0].param
-    throw error;
-  }
+  validationResult(req);
     const params = req.body;
     bcrypt
         .hash(params.password, 12)
@@ -38,13 +31,7 @@ exports.signup = (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()){    
-    const error = new Error(`${errors.array()[0].msg}`);
-    error.statusCode = 401;
-    error.param = errors.array()[0].param
-    throw error;
-  }
+  validationResult(req);
   
   const email = req.body.email;
   const password = req.body.password;
