@@ -5,6 +5,7 @@ module.exports = [
     .exists().withMessage('Name not sent by the frontend')
     .notEmpty().withMessage('Name is required')
     .isString().withMessage('Name is a string text')
+    .isLength({ min: 3 }).withMessage('Invalid Name')
     .trim(),
 
     body('job')
