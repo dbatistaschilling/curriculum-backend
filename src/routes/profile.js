@@ -14,5 +14,9 @@ router.get('/profile/:profileId', profileController.getProfile);
 router.patch('/profile/:profileId', isAuth, profile, profileController.updateProfile);
 // DELETE /profile/:profileId
 router.delete('/profile/:profileId', isAuth, profileController.deleteProfile);
+// POST /profile/update-status/:profileId
+router.patch('/profile/update-status/:profileId', isAuth, profileController.activateStatus);
+// GET /profile/active
+router.get('/profile-active', profileController.getActiveProfile)
 
 module.exports = router;

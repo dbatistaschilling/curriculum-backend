@@ -55,6 +55,11 @@ const profileSchema = new Schema({
         type: String,
         required: true
     },
+    status: {
+        type: String,
+        default: 'Active',
+        enum: ['Active', 'Desactivated']
+    },
     owner: {
         type: Schema.Types.ObjectId,
         ref: 'User',

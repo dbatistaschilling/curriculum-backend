@@ -12,7 +12,7 @@ module.exports = (req, res, next) => {
 	let decodedToken;
 	Token.findOne({ token })
 		.then(t => {			
-			if (!t){
+			if (!t){				
 				const error = new Error('Not authenticated.');
 				error.statusCode = 401;
 				throw error;
