@@ -33,7 +33,6 @@ exports.createProfile = (req, res, next) => {
                     p.status = 'Desactivated';
                     return p.save();
                 })).then(updatedProfile => {
-                    console.log(updatedProfile);
                     return updatedProfile;
                 });
             }
@@ -62,7 +61,7 @@ exports.getAllProfiles = (req, res, next) => {
         .sort({[sortby[0]]: sortby[1] })
         .then(profiles => {
             if (!profiles || profiles.length === 0) {
-                const error = new Error('Could not find profiles.');
+                const error = new Error('Could not find any profiles.');
                 error.statusCode = 404;
                 throw error;
             }
@@ -111,7 +110,6 @@ exports.getActiveProfile = (req, res, next) => {
         }
         next(err);
     })
-
 }
 
 exports.updateProfile = (req, res, next) => {
@@ -136,7 +134,6 @@ exports.updateProfile = (req, res, next) => {
         }
         next(err);
     });
-
 }
 
 exports.deleteProfile = (req, res, next) => {
@@ -194,7 +191,6 @@ exports.activateStatus = (req, res, next) => {
                     p.status = 'Desactivated';
                     return p.save();
                 })).then(updatedProfile => {
-                    console.log(updatedProfile);
                     return updatedProfile;
                 });
             }

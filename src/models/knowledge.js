@@ -2,26 +2,31 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const knowledgeSchema = new Schema({
-    category: {
+    title: {
         type: String,
-        required: true,
-        descriptions: [{
-            title: {
-                type: String,
-                required: true
-            },
-            status: {
-                type: String,
-                enum: ['Finished', 'Coursing']
-            },
-            url: String,
-            level: Number,
-            initialDate: Date,
-            finalDate: Date,
-            duration: Number,
-            address: String,
-            description: String
-        }],
+        required: true
+    },
+    courseSituation: {
+        type: String,
+        default: 'Finished',
+        enum: ['Finished', 'Coursing']
+    },
+    status: {
+        type: String,
+        default: 'Active',
+        enum: ['Active', 'Disactivated']
+    },
+    url: String,
+    level: Number,
+    initialDate: Date,
+    finalDate: Date,
+    duration: Number,
+    address: String,
+    note: String,
+    category: {
+        type: Schema.Types.ObjectId,
+        ref: 'Category',
+        required: true
     }
 },
     {timestamps: true}

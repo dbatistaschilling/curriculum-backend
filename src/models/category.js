@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const tokenSchema = new Schema({
-    token: {
+const categorySchema = new Schema({
+    category: {
         type: String,
         required: true
     },
@@ -15,8 +15,10 @@ const tokenSchema = new Schema({
     {timestamps: true}
 );
 
-tokenSchema.methods.toJSON = function () {
-    return this.token;
-}
+categorySchema.virtual('knowledges', {
+    ref: 'Knoledge',
+    localField: '_id',
+    foreignField: 'category'
+  });
 
-module.exports = mongoose.model('Token', tokenSchema);
+module.exports = mongoose.model('Category', categorySchema);
