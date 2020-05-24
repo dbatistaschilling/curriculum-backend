@@ -1,25 +1,36 @@
 const Knowledge = require('../models/knowledge');
-
+const Category = require('../models/category');
 const validationResult = require('../utils/validation-result');
-const knowledgeUpdate = require('../utils/knowledge/knowledge-update');
-// const deleteFile = require('../utils/delete-file');
-// const clientQueries = require('../utils/client-queries');
+const clientQueries = require('../utils/client-queries');
 
-const User = require('../models/user');
+// const User = require('../models/user');
 
 exports.createKnowledge = (req, res, next) => {
     validationResult(req);
+    const categoryId = req.params.categoryId;
     const params = req.body;
     const knowledge = new Knowledge(params);
     
-    User.findOne({_id: req.userId})
-        .then(user => {
-            knowledge.owner = user._id;
+    Category.findById(categoryId)
+        .then(category => {
+            if (!category) {
+                const error = new Error('Could not find category.');
+                error.statusCode = 404;
+                error.param = 'Category';
+                throw error;
+            }
+            if (category.owner.toString() !== req.userId) {
+                const error = new Error('Unauthorized user.');
+                error.statusCode = 404;
+                error.param = 'User';
+                throw error;
+            }
+            knowledge.category = category._id;
             return knowledge.save();
         })
         .then(knowledge => {
             res.status(201).json({
-                message: 'Knoledge created!',
+                message: 'knowledge created!',
                 knowledge
             });
         })
@@ -32,32 +43,7 @@ exports.createKnowledge = (req, res, next) => {
         });
 }
 
-exports.addKnowledgeToCategory = (req, res, next) => {
-    validationResult(req);
-    const knowledgeId = req.params.knowledgeId;
-    const params = req.body;
-    
-    Knowledge.findOne(knowledgeId)
-        .then(knowledge => {
-            knowledge.push(params);
-            return knowledge.save();
-        })
-        .then(knowledge => {
-            res.status(201).json({
-                message: 'Knoledge updated!',
-                knowledge
-            });
-        })
-        .catch(err => {
-            if (!err.statusCode) {
-                err.statusCode = 500;
-            }
-            err.param = 'server';
-            next(err);
-        });
-}
-
-exports.getAllKnowledges = (req, res, next) => {
+exports.getAllknowledges = (req, res, next) => {
     const [match, page, perPage, sortby] = clientQueries(req);
     Knowledge.find( match )
         .skip((+page * +perPage) - +perPage)
@@ -79,7 +65,7 @@ exports.getAllKnowledges = (req, res, next) => {
         });
 }
 
-exports.getKnowledge = (req, res, next) => {
+exports.getknowledge = (req, res, next) => {
     const knowledgeId = req.params.knowledgeId;
     Knowledge.findById(knowledgeId).then(knowledge => {
         if (!knowledge) {
@@ -97,7 +83,7 @@ exports.getKnowledge = (req, res, next) => {
     })
 }
 
-exports.updateKnowledgeCategory = (req, res, next) => {
+exports.updateKnowledge = (req, res, next) => {
     validationResult(req);
     const knowledgeId = req.params.knowledgeId;
     Knowledge.findById(knowledgeId).then(knowledge => {
@@ -106,11 +92,14 @@ exports.updateKnowledgeCategory = (req, res, next) => {
             error.statusCode = 404;
             throw error;
         }
-        knowledge.category = req.body.category;
+        const params = Object.keys(req.body);
+        params.forEach(param => {
+            knowledge[param] = req.body[param];
+        })
         return knowledge.save();
     })
     .then(result => {
-        res.status(200).json({ message: 'Knowledge category updated!', result });
+        res.status(200).json({ message: 'Knowledge updated!', result });
     })
     .catch(err => {
         if (!err.statusCode) {
@@ -120,37 +109,39 @@ exports.updateKnowledgeCategory = (req, res, next) => {
     });
 }
 
-exports.updateKnowledgeDescription = (req, res, next) => {
-    validationResult(req);
-    const descriptionId = req.params.descriptionId;
-    Knowledge.findById(descriptionId).then(knowledge => {
-        if (!knowledge) {
-            const error = new Error('Could not find knowledge.');
-            error.statusCode = 404;
-            throw error;
-        }
-        knowledge.category = req.body.category;
-        return knowledge.save();
-    })
-    .then(result => {
-        res.status(200).json({ message: 'Knowledge category updated!', result });
+exports.deleteknowledge = (req, res, next) => {
+    const knowledgeId = req.params.knowledgeId;
+    Knowledge.findOneAndDelete(knowledgeId)
+    .then(knowledge => {
+        res.status(200).json({ message: 'knowledge deleted!', knowledgeId });
     })
     .catch(err => {
         if (!err.statusCode) {
             err.statusCode = 500;
         }
+        err.param = 'server';
         next(err);
     });
 }
 
-exports.getActiveKnowledges = (req, res, next) => {    
-    Knowledge.find({status: 'Active'}).then(knowledges => {
-        if (!knowledges) {
-            const error = new Error('Could not find knowledges.');
+exports.getCategoryActiveKnowledges = (req, res, next) => {
+    const categoryId = req.params.categoryId;
+    Category.findById(categoryId).then(category => {
+        if (!category) {
+            const error = new Error('Could not find category.');
+            error.statusCode = 404;
+            error.param = 'category';
+            throw error;
+        }
+        return Knowledge.find({status: 'Active', category: category._id});
+    })
+    .then(knowledges => {
+        if (!knowledges || knowledges.length === 0) {
+            const error = new Error('Could not find knowledges of this category.');
             error.statusCode = 404;
             throw error;
         }
-        res.status(200).json({ message: 'Fetched knowledges by Status', knowledges });
+        res.status(200).json({ message: 'Fetched active knowledges', knowledges });
     })
     .catch(err => {
         if (!err.statusCode) {

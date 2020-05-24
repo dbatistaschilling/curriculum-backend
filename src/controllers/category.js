@@ -19,7 +19,7 @@ exports.createCategory = (req, res, next) => {
         })
         .then(category => {
             res.status(201).json({
-                message: 'Category category created!',
+                message: 'Category created!',
                 category
             });
         })
@@ -94,7 +94,12 @@ exports.getCategoryKnowledges = (req, res, next) => {
         }).execPopulate();
     })
     .then(category => {
-        res.status(200).json({ message: 'Fetched category knowledges', knowledges: category.knowledges });
+        if (!category.knowledges){
+            const error = new Error('This category has no knowledges registered.');
+            error.statusCode = 404;
+            throw error;
+        }
+        res.status(200).json({ message: 'Fetched category knowledges', category, knowledges: category.knowledges });
     })
     .catch(err => {
         if (!err.statusCode) {
@@ -113,7 +118,7 @@ exports.updateCategory = (req, res, next) => {
             error.statusCode = 404;
             throw error;
         }
-        if (category.owner !== req.user._id){
+        if (category.owner.toString() !== req.userId){
             const error = new Error('Unauthorized user');
             error.statusCode = 404;
             throw error;

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Profile = require('./profile');
-const Knowledge = require('./knowledge');
+const Category = require('./category');
 
 const userSchema = new Schema({
   email: {
@@ -49,7 +49,7 @@ userSchema.virtual('tokens', {
 // Delete all profiles from the deleted user
 userSchema.pre('remove', async function(next) {
   await Profile.deleteMany({ owner: this._id });
-  await Knowledge.deleteMany({ owner: this._id });
+  await Category.deleteMany({ owner: this._id });
   next();
 })
 

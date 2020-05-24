@@ -8,7 +8,6 @@ const knowledgeSchema = new Schema({
     },
     courseSituation: {
         type: String,
-        default: 'Finished',
         enum: ['Finished', 'Coursing']
     },
     status: {
@@ -32,4 +31,4 @@ const knowledgeSchema = new Schema({
     {timestamps: true}
 );
 
-module.exports = mongoose.model('knowledge', knowledgeSchema);
+module.exports = mongoose.model('Knowledge', knowledgeSchema);

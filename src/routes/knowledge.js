@@ -5,7 +5,7 @@ const isAuth = require('../middlewares/is-auth');
 
 const router = express.Router();
 // POST /knowledge
-router.post('/knowledge/new', isAuth, knowledge, knowledgeController.createKnowledge);
+router.post('/knowledge/new/:categoryId', isAuth, knowledge, knowledgeController.createKnowledge);
 // GET /knowledges
 router.get('/knowledges', knowledgeController.getAllknowledges);
 // GET /knowledge/:knowledgeId
@@ -14,9 +14,7 @@ router.get('/knowledge/:knowledgeId', knowledgeController.getknowledge);
 router.patch('/knowledge/edit/:knowledgeId', isAuth, knowledge, knowledgeController.updateKnowledge);
 // DELETE /knowledge/:knowledgeId
 router.delete('/knowledge/delete/:knowledgeId', isAuth, knowledgeController.deleteknowledge);
-// POST /knowledge/update-status/:knowledgeId
-router.patch('/knowledge/update-status/:knowledgeId', isAuth, knowledgeController.activateStatus);
 // GET /knowledge/active
-router.get('/knowledges-active', knowledgeController.getActiveKnowledges)
+router.get('/knowledges-active-category/:categoryId', knowledgeController.getCategoryActiveKnowledges)
 
 module.exports = router;

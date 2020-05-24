@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Knowledge = require('./knowledge');
 
 const categorySchema = new Schema({
     category: {
@@ -16,9 +17,14 @@ const categorySchema = new Schema({
 );
 
 categorySchema.virtual('knowledges', {
-    ref: 'Knoledge',
+    ref: 'Knowledge',
     localField: '_id',
     foreignField: 'category'
-  });
+});
+
+categorySchema.pre('remove', async function(next) {
+    await Knowledge.deleteMany({ category: this._id });
+    next();
+})
 
 module.exports = mongoose.model('Category', categorySchema);

@@ -14,6 +14,8 @@ const {fileStorage, fileFilter, sharpMethod} = require('./middlewares/images');
 const profile = require('./routes/profile');
 const auth = require('./routes/auth');
 const user = require('./routes/user');
+const category = require('./routes/category');
+const knowledge = require('./routes/knowledge');
 
 const app = express();
 
@@ -29,7 +31,8 @@ app.use('/src/images', express.static(path.join(__dirname, 'src', 'images')));
 app.use(auth);
 app.use(user);
 app.use(profile);
-
+app.use(category);
+app.use(knowledge);
 
 app.use(errors); // Error handler
 
