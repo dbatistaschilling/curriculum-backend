@@ -1,5 +1,7 @@
 const User = require('../models/user');
 const clientQueries = require('../utils/client-queries');
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 exports.getAllUsers = (req, res, next) => {
     User

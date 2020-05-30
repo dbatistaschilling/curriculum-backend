@@ -16,6 +16,7 @@ const auth = require('./routes/auth');
 const user = require('./routes/user');
 const category = require('./routes/category');
 const knowledge = require('./routes/knowledge');
+const clientEmail = require('./routes/mail');
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use(user);
 app.use(profile);
 app.use(category);
 app.use(knowledge);
+app.use(clientEmail);
 
 app.use(errors); // Error handler
 

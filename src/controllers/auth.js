@@ -93,25 +93,7 @@ exports.logout = (req, res, next) => {
 }
 
 exports.forgotPassword = (req, res, next) => {
-  const params = Object.keys(req.body);
-  let error;
-  if (!params.includes('email')){
-      error = new Error('No email sent by the client');
-  } else if (!req.body.email){
-      error = new Error('Email input is empty');
-  } else if (!params.includes('url')){
-      error = new Error('Application URL not sent by the client');
-  } else if (!req.body.url){
-      error = new Error('URL of the application not set by the client');
-  } else if (!params.includes('recoverPath')){
-      error = new Error('Recover email path not sent by the client');
-  } else if (!req.body.recoverPath){
-      error = new Error('Recover path not set by the client');
-  }
-  if (error){
-    error.statusCode = 401;
-    throw error;
-  }
+  validationResult(req);
 
   let userObj;
   User.findOne({ email: req.body.email })

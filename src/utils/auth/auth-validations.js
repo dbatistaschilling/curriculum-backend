@@ -78,6 +78,32 @@ exports.signup = [
     .bail()
 ]
 
+exports.forgotPassword = [
+    body('email')
+    .exists().withMessage('Email not sent by the frontend')
+    .notEmpty().withMessage('Email is empty')
+    .isEmail().withMessage('Please enter a valid email.')
+    .custom((value, { req }) => {
+        if (value.includes('test.com')){
+            throw new Error('Please enter a valid email.');
+        }
+        return true;
+    })
+    .bail(),
+
+    body('url')
+    .exists().withMessage('Url not sent by the frontend')
+    .notEmpty().withMessage('Url is empty')
+    .isURL().withMessage('Please enter a valid url.')
+    .bail(),
+
+    body('recoverPath')
+    .exists().withMessage('recoverPath not sent by the frontend')
+    .notEmpty().withMessage('recoverPath is empty')
+    .bail(),
+
+]
+
 exports.recoverPassword = [
     body('password')
     .exists().withMessage('password not sent by the frontend')
