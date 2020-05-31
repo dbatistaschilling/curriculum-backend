@@ -146,7 +146,7 @@ exports.deleteProfile = (req, res, next) => {
             throw error;
         }
         deleteFile(profile.imageUrl, next);
-        return Profile.findOneAndDelete(profileId);
+        return Profile.findOneAndDelete({_id: profileId});
     })
     .then(result => {
         res.status(200).json({ message: 'Profile deleted!' });

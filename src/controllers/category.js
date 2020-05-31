@@ -138,7 +138,7 @@ exports.updateCategory = (req, res, next) => {
 }
 
 exports.deleteCategory = (req, res, next) => {
-    const categoryId = req.params.categoryId;
+    const categoryId = req.params.categoryId;    
     Category.findById(categoryId).then(category => {
         if (!category) {
             const error = new Error('Could not find category.');
@@ -146,7 +146,7 @@ exports.deleteCategory = (req, res, next) => {
             error.param = 'category';
             throw error;
         }
-        return Category.findOneAndDelete(categoryId);
+        return category.remove();
     })
     .then(category => {
         res.status(200).json({ message: 'Category deleted!', categoryId: category._id });

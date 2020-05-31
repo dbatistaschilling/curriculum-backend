@@ -111,7 +111,7 @@ exports.updateKnowledge = (req, res, next) => {
 
 exports.deleteknowledge = (req, res, next) => {
     const knowledgeId = req.params.knowledgeId;
-    Knowledge.findOneAndDelete(knowledgeId)
+    Knowledge.findOneAndDelete({_id: knowledgeId})
     .then(knowledge => {
         res.status(200).json({ message: 'knowledge deleted!', knowledgeId });
     })
