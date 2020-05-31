@@ -2,6 +2,8 @@
 const path = require('path');
 // Package imports
 const express = require('express');
+const helmet = require('helmet');
+const compression = require('compression');
 require('./db/mongoose')
 const bodyParser = require('body-parser');
 
@@ -35,6 +37,9 @@ app.use(profile);
 app.use(category);
 app.use(knowledge);
 app.use(clientEmail);
+
+app.use(helmet());
+app.use(compression());
 
 app.use(errors); // Error handler
 
